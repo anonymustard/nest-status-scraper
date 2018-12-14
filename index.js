@@ -1,7 +1,9 @@
+const AWS = require('aws-sdk');
+
 const email = process.env.NEST_EMAIL;
 const password = process.env.NEST_PASSWORD;
 
-(async () => {
+const getNestStatus = async () => {
     const puppeteer = require('puppeteer-lambda');
 
     const browser = await puppeteer.getBrowser({headless:true});
@@ -20,9 +22,28 @@ const password = process.env.NEST_PASSWORD;
     // text = await page.evaluate(h2=>h2.innerHTML, thermostatLinks[1]);
     // console.log(`"${text}"`);
     const xpathTextContent = await thermostatLinks[0].getProperty('textContent');
-    const text = await xpathTextContent.jsonValue();
-    const error = text !== '';
+    const text = await xpathTextContent.jsonValue() || 'OK';
 
-    console.log(`error: ${error} ${text}`);
     await browser.close();
-})();
+    console.log(`Got status "${text}"`);
+
+    return text;
+};
+
+const bucketName = process.env.BUCKET_NAME;
+const objectName = process.env.OBJECT_NAME;
+
+const uploadStatusToS3 = (status) => {
+    const s3 = new AWS.S3();
+    console.log(`Uploading status "${status}" to ${bucketName}/${objectName}`)
+    return s3.putObject({
+        ACL: 'public-read',
+        Bucket: bucketName,
+        Key: objectName,
+        StorageClass: 'STANDARD',
+        Body: status + '\n'
+    }).promise();
+}
+
+getNestStatus()
+    .then((status) => uploadStatusToS3(status));

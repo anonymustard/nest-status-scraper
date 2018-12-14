@@ -6,7 +6,9 @@
   "dependencies": {
     "puppeteer-lambda": "^1.0.14"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "aws-sdk": "^2.376.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
