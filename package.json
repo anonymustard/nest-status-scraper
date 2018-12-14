@@ -1,0 +1,15 @@
+{
+  "name": "nest-status-scraper",
+  "version": "1.0.0",
+  "description": "Scrape Nest Home to determine if power is out",
+  "main": "index.js",
+  "dependencies": {
+    "puppeteer-lambda": "^1.0.14"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "anonymustard",
+  "license": "ISC"
+}
